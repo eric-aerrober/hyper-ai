@@ -1,12 +1,12 @@
 
 ![logo](logo.png)
 
-# Flame Logs
+# Hyper
 
-> When you just want simple logging with nice colors.
+> A quick and easy AI library for Typescript
 
 [GitHub](https://github.com/eric-aerrober/flame-logs)
-[Get Started](#Features)
+[Get Started](#Hyper)
 
 
 <!-- background color -->

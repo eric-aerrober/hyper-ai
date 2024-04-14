@@ -1,33 +1,70 @@
-# Flame Logs
+# Hyper
 
-When you just want simple logs that look nice
+A quick and easy AI library for Typescript
 
-## Features
+## Integrations
 
-Support for the following:
+Support for the following integrations:
 
-- log, info, warn, and error messages
-- colors for each log level
-- relative timestamps for each log message
-- run and track jobs with configurable retries
+- OpenAI DALL-E-3
+- Anthropic Claude
 
 ## Example
 
-```ts
-import { FlameLogger } from "../src";
+```js
+const hyper = new Hyper({
+    using: {
+        chatBasedLLM: new AnthropicChatBasedLLM(),
+        imageGenerator: new DalleImageGenerator(),
+    },
+});
 
-const flame = new FlameLogger({ clear: true })
+const h = hyper.begin();
 
-flame.log('Log Message')
-flame.logWarning('Warning Message')
-flame.logError('Error Message')
+await h.ask({
+    prompt: 'Generate me two image prompts for cats in trees',
+    format: {
+        prompt1: 'prompt1',
+        prompt2: 'prompt2',
+    },
+});
 
-const job1 = flame.startJob('My Job 1')
-const job2 = flame.startJob('My Job 2')
-const job3 = flame.startJob('My Job 3')
+await h.generateImage('cat1', h.state.prompt1);
+await h.generateImage('cat2', h.state.prompt2);
 
-flame.completeJob(job1)
-flame.failJob(job2)
+const results = await h.save()
+
 ```
 
-![Flame Logs](./example.png)
+Saves output as json blob for easy access
+
+```js
+{
+  "start": "2024-04-14T17:38:40.290Z",
+  "end": "2024-04-14T17:38:40.296Z",
+  "state": {
+    "prompt1": "A majestic tabby cat perched on a high branch of an ancient oak tree, surveying its lush green surroundings with a regal gaze.",
+    "prompt2": "A curious Siamese kitten playfully climbing the trunk of a blossoming cherry tree, pink petals fluttering around its adorable face."
+  },
+  "messages": [
+    {
+      "text": "Generate me two image prompts for cats in trees\nPlease respond as a valid JSON string matching this format: {\"prompt1\":\"prompt1\",\"prompt2\":\"prompt2\"}",
+      "from": "user"
+    },
+    {
+      "text": "{\"prompt1\":\"A majestic tabby cat perched on a high branch of an ancient oak tree, surveying its lush green surroundings with a regal gaze.\",\"prompt2\":\"A curious Siamese kitten playfully climbing the trunk of a blossoming cherry tree, pink petals fluttering around its adorable face.\"}",
+      "from": "bot"
+    }
+  ],
+  "assets": {
+    "cat1": {
+      "type": "image",
+      "access": "file:///Users/xxxx/hyper-ai/.hyper/results/images/7gnnq66oxpcfbs1953rao.png"
+    },
+    "cat2": {
+      "type": "image",
+      "access": "file:///Users/xxxx/.hyper/results/images/ym6f33s1ufbxj7rnxyskr.png"
+    }
+  }
+}
+```
