@@ -32,14 +32,14 @@ export class Invoker<InputType, ResultType> {
             return await this.cache.get(key);
         } else {
             const result = await execution.log.jobWithRetries(`Invoke of '${this.getName()}'`, () =>
-                this.onInvoke(input)
+                this.onInvoke(input, execution)
             );
             await this.cache.set(key, result);
             return result;
         }
     }
 
-    protected onInvoke(input: InputType): Promise<ResultType> {
+    protected onInvoke(input: InputType, execution: HyperExecution): Promise<ResultType> {
         throw new Error('Not implemented');
     }
 }

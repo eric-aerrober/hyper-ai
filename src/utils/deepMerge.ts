@@ -9,6 +9,12 @@ export function deepMergeOnto(target: any, source: any) {
     if (!isTargetObject && !isSourceObject && !isTargetArray && !isSourceArray) {
         return source;
     }
+    if (target === undefined && source !== undefined) {
+        return JSON.parse(JSON.stringify(source))
+    }
+    if (source === undefined) {
+        return target
+    }
 
     // We are merging two arrays, just return a deep copy of the source array
     if (!isTargetObject && !isSourceObject) {
@@ -24,5 +30,5 @@ export function deepMergeOnto(target: any, source: any) {
 
 // Perform a deep merge with two objects and return the result, neither object is modified
 export function deepMergeTogether(a: any, b: any) {
-    return deepMergeOnto(deepMergeOnto({}, a), b);
+    return deepMergeOnto(JSON.parse(JSON.stringify(a)), b);
 }

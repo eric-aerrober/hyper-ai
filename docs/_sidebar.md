@@ -15,3 +15,12 @@
 - Image Models
 
   - [DALL-E Image Generator](openai-dalle.md)
+  - [Stability AI](stability-ai-image.md)
+
+- Image-to-Image Models
+
+  - [Stability AI](stability-ai-image-image.md)
+
+- Workflows
+
+  - [Image Collage Workflow](image-collage-workflow.md)

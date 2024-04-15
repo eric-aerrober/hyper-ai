@@ -1,10 +1,14 @@
+import { HyperExecution } from "../framework/hyper-execution";
+
 export interface SaverResult {
+    raw?: any;
     accessUrl: string;
 }
 
 export class Saver<SaverInput> {
-    public async save(data: SaverInput): Promise<SaverResult> {
-        return await this.saveRaw(data);
+
+    public async save(name: string, data: SaverInput, execution: HyperExecution): Promise<SaverResult> {
+        return execution.log.jobWithRetries('Saving: ' + name, () => this.saveRaw(data));
     }
 
     protected saveRaw(_: SaverInput): Promise<SaverResult> {

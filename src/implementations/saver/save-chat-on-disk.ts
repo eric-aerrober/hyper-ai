@@ -10,7 +10,7 @@ export class SaveExecutionDataOnDisk extends Saver<any> {
 
     protected async saveRaw(value: any): Promise<SaverResult> {
         const data = JSON.stringify(value, null, 2);
-        const path = `${this.prefix}/${randomId()}.json`;
+        const path = `${this.prefix}/${value.id || randomId()}.json`;
         await fs.promises.writeFile(path, data);
         const absolutePath = 'file://' + fs.realpathSync(path);
         return { accessUrl: absolutePath };

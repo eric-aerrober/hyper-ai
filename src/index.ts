@@ -10,3 +10,4 @@ export * from './implementations/cache/cache-on-disk';
 export * from './implementations/cache/no-cache';
 export * from './interfaces/chat-based-llm';
 export * from './interfaces/image-generator';
+export * from './workflows/image-collage';

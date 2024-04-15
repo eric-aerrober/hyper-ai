@@ -13,7 +13,7 @@ export class SaveBase64ImgOnDisk extends Saver<ImageGeneratorResult> {
         const path = `${this.prefix}/${randomId()}.png`;
         const buffer = Buffer.from(value.base64, 'base64');
         await fs.promises.writeFile(path, buffer);
-        const absolutePath = 'file://' + fs.realpathSync(path);
+        const absolutePath = 'file://' + fs.realpathSync(path)
         return { accessUrl: absolutePath };
     }
 }
