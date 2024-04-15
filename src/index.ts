@@ -6,6 +6,8 @@ export * from './execution/invoker';
 export * from './execution/saver';
 export * from './implementations/chat-based-llm/anthropic';
 export * from './implementations/image-generator/dalle';
+export * from './implementations/image-generator/stability-ai';
+export * from './implementations/image-to-image-generator/stability-ai';
 export * from './implementations/cache/cache-on-disk';
 export * from './implementations/cache/no-cache';
 export * from './interfaces/chat-based-llm';
