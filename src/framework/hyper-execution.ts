@@ -1,12 +1,12 @@
 import { BestEffortJsonParser } from '../utils/parser';
 import { ChatContext, ChatMessage } from './chat-context';
 import { Hyper } from './hyper';
-import { FlameLogger } from 'flame-logs';
 import { deepMergeTogether } from '../utils/deepMerge';
 import { SaverResult } from '../execution/saver';
 import { LLMChatResponse } from '../interfaces/chat-based-llm';
 import { randomId } from '../utils/random';
 import { ImageToImageGeneratorInput } from '../interfaces/image-to-image-generator';
+import { FlameLogger } from 'flame-logs';
 
 export interface HyperExecutionResultAsset {
     type: 'image';
@@ -74,7 +74,7 @@ export class HyperExecution {
 
     // Interacting with AI interfaces
 
-    async tell(message: string) {
+    tell(message: string) {
         this.chatContext = this.chatContext
             .addUserMessage(message)
             .addBotMessage("Understood")

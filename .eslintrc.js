@@ -32,5 +32,7 @@ module.exports = {
     "@typescript-eslint/no-unsafe-return": "off",
     "@typescript-eslint/no-unsafe-member-access": "off",
     "@typescript-eslint/no-floating-promises": "off",
+    "node/no-deprecated-api": "off",
+    "@typescript-eslint/restrict-template-expressions": "off",
   },
 };

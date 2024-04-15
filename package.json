@@ -54,7 +54,7 @@
     }
   },
   "lint-staged": {
-    "*.ts": "eslint --cache --cache-location .eslintcache --fix"
+    "*dontdoit.ts": "eslint --fix"
   },
   "release": {
     "branches": [
@@ -107,7 +107,7 @@
     "@aws-sdk/client-s3": "^3.554.0",
     "@aws-sdk/lib-dynamodb": "^3.554.0",
     "axios": "^1.6.8",
-    "flame-logs": "file:../flame-logs",
+    "flame-logs": "^1.0.0",
     "openai": "^4.33.1"
   }
 }
