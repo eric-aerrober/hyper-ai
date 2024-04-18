@@ -5,7 +5,7 @@
 
 > A quick and easy AI library for Typescript
 
-[GitHub](https://github.com/eric-aerrober/flame-logs)
+[GitHub](https://github.com/eric-aerrober/hyper-ai)
 [Get Started](#Hyper)
 
 
