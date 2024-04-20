@@ -8,7 +8,8 @@ export interface SaverResult {
 export class Saver<SaverInput> {
 
     public async save(name: string, data: SaverInput, execution: HyperExecution): Promise<SaverResult> {
-        return execution.log.jobWithRetries('Saving: ' + name, () => this.saveRaw(data));
+        execution.tasks.logTask(execution.rootTask, `Saving ${name}`);
+        return this.saveRaw(data);
     }
 
     protected saveRaw(_: SaverInput): Promise<SaverResult> {

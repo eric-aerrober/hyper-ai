@@ -1,11 +1,10 @@
-import { ImageGeneratorAIInterface, ImageGeneratorAIInterfaceProps, ImageGeneratorInput, ImageGeneratorResult } from '../../interfaces/image-generator';
 import { ImageToImageGeneratorAIInterface, ImageToImageGeneratorAIInterfaceProps, ImageToImageGeneratorInput, ImageToImageGeneratorResult } from '../../interfaces/image-to-image-generator';
-import { execute } from '../../utils/execute';
+// import { execute } from '../../utils/execute';
 import { randomId } from '../../utils/random';
 import { CacheOnDisk } from '../cache/cache-on-disk';
 import fs from 'fs';
 
-interface StabilityImageToImageAIGeneratorInput extends ImageToImageGeneratorAIInterfaceProps {
+export interface StabilityImageToImageAIGeneratorInput extends ImageToImageGeneratorAIInterfaceProps {
     apiKey?: string;
     engineId?: string;
 }
@@ -31,23 +30,22 @@ export class StabilityImageToImageAiImageGenerator extends ImageToImageGenerator
     protected async onGenerateImage(input: ImageToImageGeneratorInput): Promise<ImageToImageGeneratorResult> {
 
         const outPath = './.hyper/tmp/' + randomId() + '.png';
-        fs.mkdirSync('./.hyper/tmp', { recursive: true });
         
         try {
-        await execute(`
-            curl -f -sS -X POST "https://api.stability.ai/v1/generation/${this.engineId}/image-to-image" \
-            -H 'Content-Type: multipart/form-data' \
-            -H 'Accept: image/png' \
-            -H "Authorization: Bearer ${this.apiKey}" \
-            -F 'init_image=@"${input.imageUrl}"' \
-            -F 'init_image_mode=IMAGE_STRENGTH' \
-            -F 'image_strength=${input.strength || 0.05}' \
-            -F 'text_prompts[0][text]=${input.prompt.replace(/['"\n]+/g, '')}' \
-            -F 'cfg_scale=7' \
-            -F 'samples=1' \
-            -F 'steps=30' \
-            -o '${outPath}'
-        `)
+        // await execute(`
+        //     curl -f -sS -X POST "https://api.stability.ai/v1/generation/${this.engineId}/image-to-image" \
+        //     -H 'Content-Type: multipart/form-data' \
+        //     -H 'Accept: image/png' \
+        //     -H "Authorization: Bearer ${this.apiKey}" \
+        //     -F 'init_image=@"${input.imageUrl}"' \
+        //     -F 'init_image_mode=IMAGE_STRENGTH' \
+        //     -F 'image_strength=${input.strength || 0.05}' \
+        //     -F 'text_prompts[0][text]=${input.prompt.replace(/['"\n]+/g, '')}' \
+        //     -F 'cfg_scale=7' \
+        //     -F 'samples=1' \
+        //     -F 'steps=30' \
+        //     -o '${outPath}'
+        // `)
 
         } catch (e) {
             return { base64: ''}

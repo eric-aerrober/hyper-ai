@@ -22,7 +22,7 @@ export class ImageToImageGeneratorAIInterface extends Invoker<ImageToImageGenera
 
     constructor(props: ImageToImageGeneratorAIInterfaceProps) {
         super(props);
-        this.saver = props.saver || new SaveBase64ImgOnDisk('.hyper/results/images');
+        this.saver = props.saver!;
     }
 
     protected async onInvoke(input: ImageToImageGeneratorInput, execution: HyperExecution): Promise<SaverResult> {

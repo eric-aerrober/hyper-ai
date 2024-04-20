@@ -6,7 +6,6 @@ import { SaverResult } from '../execution/saver';
 import { LLMChatResponse } from '../interfaces/chat-based-llm';
 import { randomId } from '../utils/random';
 import { ImageToImageGeneratorInput } from '../interfaces/image-to-image-generator';
-import { FlameLogger } from 'flame-logs';
 
 export interface HyperExecutionResultAsset {
     type: 'image';
@@ -30,7 +29,11 @@ export class HyperExecution {
     private chatContext: ChatContext = new ChatContext([]);
     private resultAssets: Record<string, HyperExecutionResultAsset> = {};
 
-    constructor(private hyper: Hyper, public readonly log: FlameLogger) {}
+    private rootTaskId: string
+
+    constructor(private hyper: Hyper) {
+        this.rootTaskId = this.tasks.startTask('Execution');
+    }
 
     // Operations to the execution itself
 
@@ -39,6 +42,12 @@ export class HyperExecution {
     }
     get assets(): Record<string, HyperExecutionResultAsset> {
         return this.resultAssets;
+    }
+    get tasks() {
+        return this.hyper.tasks;
+    }
+    get rootTask() {
+        return this.rootTaskId;
     }
 
     saveAsset(id: string, asset: HyperExecutionResultAsset): void {
@@ -61,15 +70,8 @@ export class HyperExecution {
             assets: this.assets,
         }
         const data = await this.hyper.executionDataSaver.save('execution result data', executionResult, this);
-        this.log.logComplete('Execution saved ' + data.accessUrl);
+        this.tasks.endTask(this.rootTaskId);
         return { accessUrl: data.accessUrl, raw: executionResult };
-    }
-
-    async publish(): Promise<SaverResult> {
-        const data = await this.save();
-        const published = await this.hyper.executionDataPublisher.save('execution result data', data.raw, this);
-        this.log.logComplete('Execution published ' + published.accessUrl);
-        return data;
     }
 
     // Interacting with AI interfaces
@@ -80,10 +82,29 @@ export class HyperExecution {
             .addBotMessage("Understood")
     }
 
+    async consider(message: string): Promise<LLMChatResponse> {
+        const fullPrompt = `
+            I am now asking you the following: 
+            
+            ${prompt}
+
+            ----
+            Please respond as in sentences or pharagraphs or bullets. Do not use an explicit JSON format.
+        `;
+        const updatedContext = this.chatContext.addUserMessage(fullPrompt);
+        const modelResponse = await this.hyper.chatBasedLLMInvoker.invoke(updatedContext, this);
+        this.chatContext = updatedContext.addBotMessage(modelResponse.text);
+        return modelResponse;
+    }
+
     async ask({ prompt, format }: { prompt: string; format: any }): Promise<LLMChatResponse> {
         const fullPrompt = `
-            ${prompt}
+            I am now asking you the following: 
             
+            ${prompt}
+
+            ----
+
             Please respond as a valid JSON string matching this format: ${JSON.stringify(format)}. 
             
             Match the structure provided, but a valid response string might be: { "answer": "your answer here" }
@@ -97,7 +118,8 @@ export class HyperExecution {
         const modelResponse = await this.hyper.chatBasedLLMInvoker.invoke(updatedContext, this);
         const jsonData = BestEffortJsonParser(modelResponse.text);
         if (!jsonData) {
-            this.log.logError('Invalid JSON response from model: ' + modelResponse.text);
+            this.tasks.errorTask(this.rootTaskId, 'Invalid JSON response from model: ' + modelResponse.text);
+            console.log(modelResponse.text);
             throw new Error('Invalid JSON response from model');
         }
         this.chatContext = updatedContext.addBotMessage(modelResponse.text);

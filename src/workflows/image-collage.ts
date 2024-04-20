@@ -162,5 +162,4 @@ export async function GenerateImageCollage (hyper: Hyper, idea: string) {
     await h.generateImagesFromImages(Object.values(h.state.prompts).map( a=> (
         { imageUrl: baseImage.accessUrl, prompt: a as string, strength: 0.15 }
     )))
-    await h.publish();
 }

@@ -1,5 +1,5 @@
-import crypto from 'crypto';
 import { Cache } from './cache';
+import { hash } from '../utils/random'
 import { HyperExecution } from '../framework/hyper-execution';
 import { NoCache } from '../implementations/cache/no-cache';
 
@@ -19,19 +19,14 @@ export class Invoker<InputType, ResultType> {
     }
 
     public async invoke(input: InputType, execution: HyperExecution): Promise<ResultType> {
-        const key = crypto
-            .createHash('sha256')
-            .update(this.getName())
-            .update(JSON.stringify(input))
-            .digest('hex');
-
+        const key = hash(this.getName() + JSON.stringify(input))
         const exists = await this.cache.exists(key);
 
         if (exists) {
-            execution.log.log(`Cache hit for invoke of '${this.getName()}'`);
+            execution.tasks.logTask(execution.rootTask, `Cache hit for invoke of '${this.getName()}'`);
             return await this.cache.get(key);
         } else {
-            const result = await execution.log.jobWithRetries(`Invoke of '${this.getName()}'`, () =>
+            const result = await execution.tasks.runWithRetries(`Invoke of '${this.getName()}'`, 5, () =>
                 this.onInvoke(input, execution)
             );
             await this.cache.set(key, result);

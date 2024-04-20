@@ -1,6 +1,5 @@
 import { Saver, SaverResult } from '../../execution/saver';
 import { randomId } from '../../utils/random';
-import { PutObjectCommand, S3Client, HeadObjectCommand } from "@aws-sdk/client-s3";
 import { ExecutionResult } from '../../framework/hyper-execution';
 import fs from 'fs';
 
